@@ -1,15 +1,41 @@
-name: eslint
+name: Check Lint & Pretty
 
-on: 
+on:
   push:
-    branches: [main]
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  eslint:
+  back:
+    defaults:
+      run:
+        working-directory: ./back
+
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      - name: Installation des dépendances
-        run: yarn --cwd ./front
-      - name: Lintage
-        run: yarn --cwd ./front eslint . --ext .js
+    - uses: actions/checkout@v2
+    - name: Setup NodeJS
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+    - run: npm install --only=dev
+    - run: npm run lint
+    - run: npm run check-pretty
+  
+  front:
+    defaults:
+      run:
+        working-directory: ./front
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup NodeJS
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+    - run: npm install --only=dev
+    - run: npm run check-pretty
